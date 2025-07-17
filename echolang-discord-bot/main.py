@@ -285,5 +285,15 @@ async def on_error(event, *args, **kwargs):
 if __name__ == "__main__":
     try:
         bot.run(BOT_TOKEN)
+    except KeyboardInterrupt:
+        logger.info("Bot stopped by user")
     except Exception as e:
         logger.error(f"Failed to start bot: {e}")
+        # Auto-restart on crashes for production
+        import time
+        time.sleep(5)
+        logger.info("Attempting to restart bot...")
+        try:
+            bot.run(BOT_TOKEN)
+        except Exception as restart_error:
+            logger.error(f"Restart failed: {restart_error}")
