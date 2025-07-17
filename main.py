@@ -29,17 +29,52 @@ async def on_ready():
     """Event triggered when bot is ready"""
     logger.info(f'{bot.user} has connected to Discord!')
     logger.info(f'Bot is in {len(bot.guilds)} guilds')
+    
+    # List all guilds and their permissions
+    for guild in bot.guilds:
+        logger.info(f"Guild: {guild.name} (ID: {guild.id})")
+        member = guild.get_member(bot.user.id)
+        if member:
+            logger.info(f"Bot permissions: {member.guild_permissions}")
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    """Handle raw reaction events"""
+    logger.info(f"Raw reaction event: {payload.emoji} by user {payload.user_id}")
+    
+    # Get the actual reaction and user objects
+    channel = bot.get_channel(payload.channel_id)
+    if not channel:
+        return
+        
+    try:
+        message = await channel.fetch_message(payload.message_id)
+        user = bot.get_user(payload.user_id)
+        
+        if user and message:
+            # Find the reaction object
+            for reaction in message.reactions:
+                if str(reaction.emoji) == str(payload.emoji):
+                    await on_reaction_add(reaction, user)
+                    break
+    except Exception as e:
+        logger.error(f"Error in raw reaction handler: {e}")
 
 @bot.event
 async def on_reaction_add(reaction, user):
     """Handle emoji reactions added to messages"""
+    logger.info(f"Reaction detected: {reaction.emoji} by {user.name}")
+    
     # Ignore bot's own reactions
     if user.bot:
+        logger.info(f"Ignoring bot reaction from {user.name}")
         return
     
     # Check if reaction is a flag emoji
     emoji_str = str(reaction.emoji)
+    logger.info(f"Checking emoji: {emoji_str}")
     if emoji_str not in EMOJI_TO_LANGUAGE:
+        logger.info(f"Emoji {emoji_str} not in supported languages")
         return
     
     language_code = EMOJI_TO_LANGUAGE[emoji_str]
