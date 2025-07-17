@@ -21,6 +21,8 @@ translation_service = TranslationService()
 
 # Store active threads for cleanup
 active_threads = {}
+# Store thread deletion tasks for cancellation
+thread_deletion_tasks = {}
 
 @bot.event
 async def on_ready():
@@ -56,11 +58,13 @@ async def on_reaction_add(reaction, user):
             thread = active_threads[message_id]['thread']
             # Check if thread still exists
             try:
-                # Use the bot to fetch the thread instead of thread.fetch()
-                await bot.fetch_channel(thread.id)
+                # Use the guild to fetch the thread instead of thread.fetch()
+                await message.guild.fetch_channel(thread.id)
             except discord.NotFound:
                 # Thread was deleted, remove from active threads
                 del active_threads[message_id]
+                if message_id in thread_deletion_tasks:
+                    del thread_deletion_tasks[message_id]
                 thread = None
         
         # Create new thread if none exists
@@ -79,7 +83,8 @@ async def on_reaction_add(reaction, user):
                 }
                 
                 # Schedule thread deletion after 180 seconds
-                asyncio.create_task(delete_thread_after_delay(thread, message_id))
+                task = asyncio.create_task(delete_thread_after_delay(thread, message_id))
+                thread_deletion_tasks[message_id] = task
                 
             except discord.Forbidden:
                 logger.error(f"No permission to create thread for message {message.id}")
@@ -92,6 +97,16 @@ async def on_reaction_add(reaction, user):
         if language_code in active_threads[message_id]['translations']:
             logger.info(f"Language {language_code} already translated for message {message.id}")
             return
+        
+        # Cancel existing deletion task and schedule a new one (reset timer)
+        if message_id in thread_deletion_tasks:
+            thread_deletion_tasks[message_id].cancel()
+            logger.info(f"Cancelled previous deletion task for thread {thread.id}")
+        
+        # Schedule new deletion task with reset timer
+        task = asyncio.create_task(delete_thread_after_delay(thread, message_id))
+        thread_deletion_tasks[message_id] = task
+        logger.info(f"Reset 180s deletion timer for thread {thread.id}")
         
         # Translate the message
         logger.info(f"Translating message to {language_code}")
@@ -139,10 +154,15 @@ async def delete_thread_after_delay(thread, message_id):
             except Exception as e:
                 logger.error(f"Error deleting thread {thread.id}: {e}")
             finally:
-                # Remove from active threads
+                # Remove from active threads and tasks
                 if message_id in active_threads:
                     del active_threads[message_id]
+                if message_id in thread_deletion_tasks:
+                    del thread_deletion_tasks[message_id]
     
+    except asyncio.CancelledError:
+        logger.info(f"Thread deletion task cancelled for thread {thread.id}")
+        # Don't clean up here since the task was cancelled for timer reset
     except Exception as e:
         logger.error(f"Error in delete_thread_after_delay: {e}")
 
