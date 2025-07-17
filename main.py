@@ -55,17 +55,39 @@ async def on_raw_reaction_add(payload):
     try:
         message = await channel.fetch_message(payload.message_id)
         
-        # Try to get user from guild first, then fallback to bot.get_user
+        # Try to get user with multiple methods
         user = None
+        
+        # Method 1: Guild member (works with members intent)
         if hasattr(channel, 'guild') and channel.guild:
             user = channel.guild.get_member(payload.user_id)
+            if user:
+                logger.info(f"Found user via guild member: {user.name}")
         
+        # Method 2: Bot user cache
         if not user:
             user = bot.get_user(payload.user_id)
-            
+            if user:
+                logger.info(f"Found user via bot cache: {user.name}")
+        
+        # Method 3: Fetch user directly
         if not user:
-            logger.error(f"User {payload.user_id} not found in guild or bot cache")
-            return
+            try:
+                user = await bot.fetch_user(payload.user_id)
+                if user:
+                    logger.info(f"Found user via fetch: {user.name}")
+            except Exception as e:
+                logger.error(f"Error fetching user: {e}")
+        
+        # Method 4: Create minimal user object as fallback
+        if not user:
+            class MinimalUser:
+                def __init__(self, user_id):
+                    self.id = user_id
+                    self.name = f"User_{user_id}"
+                    
+            user = MinimalUser(payload.user_id)
+            logger.info(f"Using fallback user object for {payload.user_id}")
             
         if not message:
             logger.error(f"Message {payload.message_id} not found")
