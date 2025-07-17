@@ -42,21 +42,40 @@ async def on_raw_reaction_add(payload):
     """Handle raw reaction events"""
     logger.info(f"Raw reaction event: {payload.emoji} by user {payload.user_id}")
     
+    # Skip bot's own reactions
+    if payload.user_id == bot.user.id:
+        return
+    
     # Get the actual reaction and user objects
     channel = bot.get_channel(payload.channel_id)
     if not channel:
+        logger.error(f"Channel {payload.channel_id} not found")
         return
         
     try:
         message = await channel.fetch_message(payload.message_id)
         user = bot.get_user(payload.user_id)
         
-        if user and message:
-            # Find the reaction object
-            for reaction in message.reactions:
-                if str(reaction.emoji) == str(payload.emoji):
-                    await on_reaction_add(reaction, user)
-                    break
+        if not user:
+            logger.error(f"User {payload.user_id} not found")
+            return
+            
+        if not message:
+            logger.error(f"Message {payload.message_id} not found")
+            return
+            
+        # Find the reaction object
+        reaction_found = False
+        for reaction in message.reactions:
+            if str(reaction.emoji) == str(payload.emoji):
+                logger.info(f"Found matching reaction, calling handler")
+                await on_reaction_add(reaction, user)
+                reaction_found = True
+                break
+                
+        if not reaction_found:
+            logger.error(f"Reaction {payload.emoji} not found in message reactions")
+            
     except Exception as e:
         logger.error(f"Error in raw reaction handler: {e}")
 
@@ -165,13 +184,14 @@ async def on_reaction_add(reaction, user):
 async def delete_thread_after_delay(thread, message_id):
     """Delete thread after 180 seconds delay"""
     try:
+        logger.info(f"Scheduled thread {thread.id} for deletion in 180 seconds")
         await asyncio.sleep(180)  # Wait 3 minutes
         
         # Check if thread still exists in active_threads
         if message_id in active_threads:
             try:
                 await thread.delete()
-                logger.info(f"Deleted thread {thread.id} after 180 seconds")
+                logger.info(f"Successfully deleted thread {thread.id} after 180 seconds")
             except discord.NotFound:
                 logger.info(f"Thread {thread.id} already deleted")
             except discord.Forbidden:
@@ -182,12 +202,15 @@ async def delete_thread_after_delay(thread, message_id):
                 # Remove from active threads and tasks
                 if message_id in active_threads:
                     del active_threads[message_id]
+                    logger.info(f"Removed message {message_id} from active_threads")
                 if message_id in thread_deletion_tasks:
                     del thread_deletion_tasks[message_id]
+                    logger.info(f"Removed deletion task for message {message_id}")
     
     except asyncio.CancelledError:
-        logger.info(f"Thread deletion task cancelled for thread {thread.id}")
+        logger.info(f"Thread deletion task cancelled for thread {thread.id} (timer reset)")
         # Don't clean up here since the task was cancelled for timer reset
+        raise  # Re-raise to properly handle cancellation
     except Exception as e:
         logger.error(f"Error in delete_thread_after_delay: {e}")
 
