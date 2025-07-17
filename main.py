@@ -54,16 +54,25 @@ async def on_raw_reaction_add(payload):
         
     try:
         message = await channel.fetch_message(payload.message_id)
-        user = bot.get_user(payload.user_id)
+        
+        # Try to get user from guild first, then fallback to bot.get_user
+        user = None
+        if hasattr(channel, 'guild') and channel.guild:
+            user = channel.guild.get_member(payload.user_id)
         
         if not user:
-            logger.error(f"User {payload.user_id} not found")
+            user = bot.get_user(payload.user_id)
+            
+        if not user:
+            logger.error(f"User {payload.user_id} not found in guild or bot cache")
             return
             
         if not message:
             logger.error(f"Message {payload.message_id} not found")
             return
             
+        logger.info(f"Processing reaction {payload.emoji} from user {user.name}")
+        
         # Find the reaction object
         reaction_found = False
         for reaction in message.reactions:
