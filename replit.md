@@ -2,7 +2,13 @@
 
 ## Overview
 
-This is a Discord bot that provides real-time message translation functionality through flag emoji reactions. Users can react to messages with flag emojis to translate the content into their desired language. The bot creates temporary threads for translations to keep channels organized and automatically manages thread lifecycle.
+This is a Discord bot called "EchoLang" that provides real-time message translation functionality through flag emoji reactions. Users can react to messages with flag emojis to translate the content into their desired language. The bot creates temporary threads for translations to keep channels organized and automatically manages thread lifecycle.
+
+## Recent Changes
+
+- **July 17, 2025**: Fixed thread existence check error where 'Thread' object has no attribute 'fetch' by using bot.fetch_channel() instead
+- **July 17, 2025**: Bot successfully tested with Japanese translation and 180-second auto-deletion working properly
+- **July 17, 2025**: Bot connected to Discord successfully with proper permissions and ready for use
 
 ## User Preferences
 
