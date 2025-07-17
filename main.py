@@ -56,16 +56,6 @@ async def on_reaction_add(reaction, user):
         
         if message_id in active_threads:
             thread = active_threads[message_id]['thread']
-            # Check if thread still exists
-            try:
-                # Use the guild to fetch the thread instead of thread.fetch()
-                await message.guild.fetch_channel(thread.id)
-            except discord.NotFound:
-                # Thread was deleted, remove from active threads
-                del active_threads[message_id]
-                if message_id in thread_deletion_tasks:
-                    del thread_deletion_tasks[message_id]
-                thread = None
         
         # Create new thread if none exists
         if thread is None:
