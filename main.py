@@ -192,9 +192,16 @@ async def on_ready():
     # Set bot status
     activity = discord.Activity(
         type=discord.ActivityType.watching,
-        name="for flag reactions 🌍 | by mythicavalon"
+        name="for flag reactions 🌍 | /echolang for info"
     )
     await bot.change_presence(activity=activity, status=discord.Status.online)
+    
+    # Sync slash commands
+    try:
+        synced = await bot.tree.sync()
+        logger.info(f"Synced {len(synced)} slash command(s)")
+    except Exception as e:
+        logger.error(f"Failed to sync slash commands: {e}")
     
     # List all guilds and their permissions
     for guild in bot.guilds:
@@ -444,6 +451,103 @@ async def donate_command(ctx):
     embed.set_thumbnail(url="https://ko-fi.com/img/githubbutton_sm.svg")
     
     await ctx.send(embed=embed)
+
+@bot.tree.command(name="echolang", description="Learn about EchoLang translation bot and get donation info")
+async def echolang_slash(interaction: discord.Interaction):
+    """Slash command to show bot info and donation links via DM"""
+    try:
+        # Create comprehensive bot info embed
+        embed = discord.Embed(
+            title="🌍 EchoLang - Auto Translation Bot",
+            description="Break language barriers with instant flag emoji translations!",
+            color=0x00ff00
+        )
+        
+        embed.add_field(
+            name="🚀 How It Works",
+            value=(
+                "1️⃣ Someone posts a message\n"
+                "2️⃣ React with any flag emoji (🇪🇸🇫🇷🇩🇪🇯🇵🇰🇷🇨🇳)\n"
+                "3️⃣ Get instant translation in a thread!\n"
+                "4️⃣ Thread auto-deletes after 2 minutes"
+            ),
+            inline=False
+        )
+        
+        embed.add_field(
+            name="✨ Features",
+            value=(
+                "• **100+ Languages** - Powered by Google Translate\n"
+                "• **Smart Threads** - Clean, organized translations\n"
+                "• **Auto-Cleanup** - No server clutter\n"
+                "• **Error Handling** - Reliable translation service\n"
+                "• **24/7 Uptime** - Always ready to translate"
+            ),
+            inline=False
+        )
+        
+        embed.add_field(
+            name="🎯 Commands",
+            value=(
+                "`!info` - Bot information\n"
+                "`!donate` - Support development\n"
+                "`/echolang` - This message (DM)"
+            ),
+            inline=True
+        )
+        
+        embed.add_field(
+            name="🛠️ Developer",
+            value="**mythicavalon**\nBuilt with Python & deep-translator",
+            inline=True
+        )
+        
+        embed.add_field(
+            name="💰 Support Development",
+            value=(
+                "Help keep EchoLang running 24/7!\n\n"
+                "**[$20 - Server Hosting](https://paypal.me/amalnair11/20)**\n"
+                "Fund 1 month of cloud hosting\n\n"
+                "**[$40 - Premium Features](https://paypal.me/amalnair11/40)**\n"
+                "Priority development & new features\n\n"
+                "**[Custom Amount](https://paypal.me/amalnair11)**\n"
+                "Any amount helps! ❤️"
+            ),
+            inline=False
+        )
+        
+        embed.add_field(
+            name="🌟 Why Donate?",
+            value=(
+                "• ☁️ **Server costs** - Keep bot online 24/7\n"
+                "• ✨ **New features** - Translation improvements\n"
+                "• 🌍 **More languages** - Expand language support\n"
+                "• 🚀 **Performance** - Faster, better translations"
+            ),
+            inline=False
+        )
+        
+        embed.set_footer(text="EchoLang • Made with ❤️ by mythicavalon • Free for everyone!")
+        embed.set_thumbnail(url=bot.user.avatar.url if bot.user.avatar else None)
+        
+        # Try to send DM first
+        try:
+            await interaction.user.send(embed=embed)
+            # If DM succeeds, send ephemeral response in channel
+            await interaction.response.send_message(
+                "📬 **Check your DMs!** I've sent you detailed info about EchoLang and how to support development!", 
+                ephemeral=True
+            )
+        except discord.Forbidden:
+            # If DM fails (user has DMs disabled), send ephemeral response with full info
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            
+    except Exception as e:
+        logger.error(f"Error in echolang slash command: {e}")
+        await interaction.response.send_message(
+            "❌ Something went wrong! Try using `!info` instead.", 
+            ephemeral=True
+        )
 
 def get_language_name(language_code):
     """Get human-readable language name from code"""

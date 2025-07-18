@@ -26,14 +26,15 @@
 
 ### Using the Bot
 1. Invite EchoLang to your Discord server
-2. Write any message in a channel
-3. React with a flag emoji (e.g., 🇪🇸 for Spanish, 🇫🇷 for French)
-4. Watch the translation appear in a thread!
+2. Type `/echolang` to get info and donation links via DM
+3. Write any message in a channel
+4. React with a flag emoji (e.g., 🇪🇸 for Spanish, 🇫🇷 for French)
+5. Watch the translation appear in a thread!
 
 ### Commands
+- `/echolang` - **Get bot info & donation links via DM** (recommended)
 - `!info` - Show bot information and usage guide
 - `!about` - Display bot features and developer info  
-- `!echolang` - Bot credits and support information
 - `!donate` - View donation tiers and support options
 
 ## 🛠️ Technical Details
