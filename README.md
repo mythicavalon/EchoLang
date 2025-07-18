@@ -31,9 +31,9 @@
 4. Watch the translation appear in a thread!
 
 ### Commands
-- `!help` - Show bot information and usage guide
-- `!info` - Display bot features and developer info
-- `!about` - Bot credits and support information
+- `!info` - Show bot information and usage guide
+- `!about` - Display bot features and developer info  
+- `!echolang` - Bot credits and support information
 
 ## 🛠️ Technical Details
 

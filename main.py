@@ -355,8 +355,8 @@ async def on_reaction_add(reaction, user):
             except Exception as post_error:
                 logger.error(f"Failed to post system error to thread: {post_error}")
 
-@bot.command(name='help', aliases=['info', 'about'])
-async def help_command(ctx):
+@bot.command(name='info', aliases=['about', 'echolang'])
+async def info_command(ctx):
     """Show bot information and usage instructions"""
     embed = discord.Embed(
         title="🌍 EchoLang Translation Bot",
@@ -383,8 +383,8 @@ async def help_command(ctx):
     )
     
     embed.add_field(
-        name="🔗 Support",
-        value="React with flag emojis to translate messages instantly!",
+        name="🔗 Commands",
+        value="Use `!info`, `!about`, or `!echolang` for help",
         inline=True
     )
     
