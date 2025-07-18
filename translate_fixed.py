@@ -117,16 +117,14 @@ class TranslationService:
             text (str): Text to analyze
             
         Returns:
-            str: Language code
+            str: Language code or None
         """
         try:
-            # Limit text length
-            if len(text) > 500:
-                text = text[:500]
+            # Create new translator instance for thread safety
+            translator = Translator()
+            result = translator.detect(text)
             
-            result = self.translator.detect(text)
-            
-            if result and result.lang:
+            if result and hasattr(result, 'lang'):
                 return result.lang
             else:
                 return None
@@ -134,37 +132,6 @@ class TranslationService:
         except Exception as e:
             logger.error(f"Sync language detection error: {e}")
             return None
-    
-    async def get_supported_languages(self):
-        """
-        Get list of supported languages
-        
-        Returns:
-            dict: Dictionary of language codes and names
-        """
-        try:
-            result = await asyncio.get_event_loop().run_in_executor(
-                None, self._get_supported_languages_sync
-            )
-            
-            return result
-            
-        except Exception as e:
-            logger.error(f"Error getting supported languages: {e}")
-            return {}
-    
-    def _get_supported_languages_sync(self):
-        """
-        Synchronous method to get supported languages
-        
-        Returns:
-            dict: Dictionary of language codes and names
-        """
-        try:
-            # Get languages from googletrans
-            from googletrans import LANGUAGES
-            return LANGUAGES
-            
-        except Exception as e:
-            logger.error(f"Error getting supported languages sync: {e}")
-            return {}
+
+# Create global translation service instance
+translation_service = TranslationService()

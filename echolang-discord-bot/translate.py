@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from googletrans import Translator
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +10,7 @@ class TranslationService:
     
     def __init__(self):
         self.translator = Translator()
-        self._rate_limit_delay = 0.5  # Delay between requests to avoid rate limiting
+        self._rate_limit_delay = 1.0  # Increased delay for stability
         self._last_request_time = 0
     
     async def translate(self, text, target_language):
@@ -28,7 +29,7 @@ class TranslationService:
         
         try:
             # Rate limiting - wait before making request
-            current_time = asyncio.get_event_loop().time()
+            current_time = time.time()
             time_since_last = current_time - self._last_request_time
             if time_since_last < self._rate_limit_delay:
                 await asyncio.sleep(self._rate_limit_delay - time_since_last)
@@ -38,12 +39,12 @@ class TranslationService:
                 None, self._translate_sync, text, target_language
             )
             
-            self._last_request_time = asyncio.get_event_loop().time()
+            self._last_request_time = time.time()
             return result
             
         except Exception as e:
             logger.error(f"Translation error: {e}")
-            return "[Translation error]"
+            return f"Translation unavailable (Language: {target_language})"
     
     def _translate_sync(self, text, target_language):
         """
@@ -61,25 +62,28 @@ class TranslationService:
             if len(text) > 1000:
                 text = text[:1000] + "..."
             
-            # Detect source language and translate
-            result = self.translator.translate(text, dest=target_language)
+            # Create new translator instance for thread safety
+            translator = Translator()
             
-            if result and result.text:
+            # Detect source language and translate
+            result = translator.translate(text, dest=target_language)
+            
+            if result and hasattr(result, 'text') and result.text:
                 # Clean up the translated text
                 translated_text = result.text.strip()
                 
                 # Add source language info if detected
-                if result.src and result.src != target_language:
+                if hasattr(result, 'src') and result.src and result.src != target_language:
                     source_lang = result.src.upper()
                     return f"{translated_text}\n\n*Detected source: {source_lang}*"
                 else:
                     return translated_text
             else:
-                return "[Translation failed]"
+                return f"Translation failed (Language: {target_language})"
                 
         except Exception as e:
             logger.error(f"Sync translation error: {e}")
-            raise e
+            return f"Translation unavailable (Language: {target_language})"
     
     async def detect_language(self, text):
         """
