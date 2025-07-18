@@ -452,6 +452,58 @@ async def donate_command(ctx):
     
     await ctx.send(embed=embed)
 
+@bot.tree.command(name="info", description="Show EchoLang bot information and usage instructions")
+async def info_slash(interaction: discord.Interaction):
+    """Slash command to show bot info and usage instructions"""
+    try:
+        embed = discord.Embed(
+            title="🌍 EchoLang Translation Bot",
+            description="Automatic message translation using flag emoji reactions",
+            color=0x00ff00
+        )
+        
+        embed.add_field(
+            name="📖 How to Use",
+            value="React to any message with a flag emoji (🇪🇸🇫🇷🇩🇪🇯🇵🇰🇷🇨🇳 etc.) to get an instant translation!",
+            inline=False
+        )
+        
+        embed.add_field(
+            name="✨ Features",
+            value="• Auto-creates translation threads\n• Supports 100+ languages\n• Threads auto-delete after 2 minutes\n• Smart error handling",
+            inline=False
+        )
+        
+        embed.add_field(
+            name="🛠️ Developer",
+            value="**mythicavalon**\nBuilt with Python, discord.py & deep-translator",
+            inline=True
+        )
+        
+        embed.add_field(
+            name="🔗 Commands",
+            value="`/info` - This message\n`/echolang` - Detailed info (DM)\n`!info`, `!donate` - Text commands",
+            inline=True
+        )
+        
+        embed.add_field(
+            name="☕ Support Development",
+            value="**[$20 - Server Hosting](https://paypal.me/amalnair11/20)** • **[$40 - Premium Features](https://paypal.me/amalnair11/40)** • **[Custom Amount](https://paypal.me/amalnair11)**\n*Help keep EchoLang running 24/7 and fund new features!*",
+            inline=False
+        )
+        
+        embed.set_footer(text="EchoLang • Made with ❤️ by mythicavalon")
+        embed.set_thumbnail(url=bot.user.avatar.url if bot.user.avatar else None)
+        
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        
+    except Exception as e:
+        logger.error(f"Error in info slash command: {e}")
+        await interaction.response.send_message(
+            "❌ Something went wrong! Try using `!info` instead.", 
+            ephemeral=True
+        )
+
 @bot.tree.command(name="echolang", description="Learn about EchoLang translation bot and get donation info")
 async def echolang_slash(interaction: discord.Interaction):
     """Slash command to show bot info and donation links via DM"""
