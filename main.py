@@ -151,7 +151,7 @@ class TranslationHandler:
                     description=translated_text,
                     color=0x00ff00
                 )
-                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name}")
+                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name} • EchoLang by mythicavalon")
                 
                 await thread.send(embed=embed)
                 logger.info(f"Posted successful translation to thread {thread.id}")
@@ -188,6 +188,13 @@ async def on_ready():
     """Event triggered when bot is ready"""
     logger.info(f'{bot.user} has connected to Discord!')
     logger.info(f'Bot is in {len(bot.guilds)} guilds')
+    
+    # Set bot status
+    activity = discord.Activity(
+        type=discord.ActivityType.watching,
+        name="for flag reactions 🌍 | by mythicavalon"
+    )
+    await bot.change_presence(activity=activity, status=discord.Status.online)
     
     # List all guilds and their permissions
     for guild in bot.guilds:
@@ -347,6 +354,44 @@ async def on_reaction_add(reaction, user):
                 await thread.send(embed=error_embed)
             except Exception as post_error:
                 logger.error(f"Failed to post system error to thread: {post_error}")
+
+@bot.command(name='help', aliases=['info', 'about'])
+async def help_command(ctx):
+    """Show bot information and usage instructions"""
+    embed = discord.Embed(
+        title="🌍 EchoLang Translation Bot",
+        description="Automatic message translation using flag emoji reactions",
+        color=0x00ff00
+    )
+    
+    embed.add_field(
+        name="📖 How to Use",
+        value="React to any message with a flag emoji (🇪🇸🇫🇷🇩🇪🇯🇵🇰🇷🇨🇳 etc.) to get an instant translation!",
+        inline=False
+    )
+    
+    embed.add_field(
+        name="✨ Features",
+        value="• Auto-creates translation threads\n• Supports 100+ languages\n• Threads auto-delete after 3 minutes\n• Smart error handling",
+        inline=False
+    )
+    
+    embed.add_field(
+        name="🛠️ Developer",
+        value="**mythicavalon**\nBuilt with Python, discord.py & deep-translator",
+        inline=True
+    )
+    
+    embed.add_field(
+        name="🔗 Support",
+        value="React with flag emojis to translate messages instantly!",
+        inline=True
+    )
+    
+    embed.set_footer(text="EchoLang • Made with ❤️ by mythicavalon")
+    embed.set_thumbnail(url=bot.user.avatar.url if bot.user.avatar else None)
+    
+    await ctx.send(embed=embed)
 
 def get_language_name(language_code):
     """Get human-readable language name from code"""
