@@ -1,26 +1,27 @@
 import asyncio
 import logging
-from googletrans import Translator
 import time
 import random
 
 logger = logging.getLogger(__name__)
 
 class TranslationService:
-    """Service for handling message translations using Google Translate with improved reliability"""
+    """Service for handling message translations using deep-translator with improved reliability"""
     
     def __init__(self):
-        self.translator = None
-        self._rate_limit_delay = 2.0  # Increased delay for better stability
+        self._rate_limit_delay = 1.0  # Reduced delay since deep-translator is more reliable
         self._last_request_time = 0
         self._retry_attempts = 3
-        self._backoff_multiplier = 2
+        self._backoff_multiplier = 1.5
         self._max_text_length = 1000
     
-    def _get_translator(self):
-        """Get a fresh translator instance for better reliability"""
+    def _get_translator(self, target_language):
+        """Get a translator instance for the target language"""
         try:
-            return Translator()
+            from deep_translator import GoogleTranslator
+            
+            # Create translator for specific language pair
+            return GoogleTranslator(source='auto', target=target_language)
         except Exception as e:
             logger.error(f"Failed to create translator instance: {e}")
             return None
@@ -110,7 +111,7 @@ class TranslationService:
         time_since_last = current_time - self._last_request_time
         
         # Base delay plus additional delay for retries
-        required_delay = self._rate_limit_delay + (attempt * 0.5)
+        required_delay = self._rate_limit_delay + (attempt * 0.3)
         
         if time_since_last < required_delay:
             sleep_time = required_delay - time_since_last + random.uniform(0.1, 0.3)
@@ -119,7 +120,7 @@ class TranslationService:
     
     def _translate_sync(self, text, target_language, attempt):
         """
-        Synchronous translation method with improved error handling
+        Synchronous translation method with improved error handling using deep-translator
         
         Args:
             text (str): Text to translate
@@ -130,33 +131,28 @@ class TranslationService:
             str: Translated text or error message
         """
         try:
-            # Create new translator instance for each attempt
-            translator = self._get_translator()
+            # Create translator instance for this attempt
+            translator = self._get_translator(target_language)
             if not translator:
                 return f"[Service unavailable - {target_language.upper()}]"
             
             logger.info(f"Attempting translation to {target_language} (attempt {attempt + 1})")
             
-            # Attempt translation with timeout handling
-            result = translator.translate(text, dest=target_language)
+            # Attempt translation
+            translated_text = translator.translate(text)
             
-            if result and hasattr(result, 'text') and result.text:
-                translated_text = result.text.strip()
+            if translated_text and isinstance(translated_text, str):
+                translated_text = translated_text.strip()
                 
-                # Validate the translation isn't just the same text
+                # Validate the translation isn't just the same text (for different languages)
                 if translated_text.lower() == text.lower() and target_language != 'en':
-                    logger.warning(f"Translation returned identical text for {target_language}")
-                    return f"[No translation needed - {target_language.upper()}]"
+                    logger.info(f"Translation returned identical text for {target_language} - might not need translation")
+                    # Still return it as it might be correct
                 
-                # Add source language info if detected and different
-                if (hasattr(result, 'src') and result.src and 
-                    result.src != target_language and result.src != 'auto'):
-                    source_lang = result.src.upper()
-                    return f"{translated_text}\n\n*Detected source: {source_lang}*"
-                else:
-                    return translated_text
+                logger.info(f"Successfully translated to {target_language}: '{text[:50]}...' -> '{translated_text[:50]}...'")
+                return translated_text
             else:
-                logger.error(f"Translation returned empty or invalid result")
+                logger.error(f"Translation returned empty or invalid result: {translated_text}")
                 return f"[Translation failed - {target_language.upper()}]"
                 
         except Exception as e:
@@ -172,6 +168,9 @@ class TranslationService:
             elif 'quota' in error_msg or 'limit exceeded' in error_msg:
                 logger.error(f"Quota exceeded on attempt {attempt + 1}: {e}")
                 return f"[Quota exceeded - {target_language.upper()}]"
+            elif 'unsupported' in error_msg or 'invalid' in error_msg:
+                logger.error(f"Unsupported language on attempt {attempt + 1}: {e}")
+                return f"[Unsupported language - {target_language.upper()}]"
             else:
                 logger.error(f"Translation error on attempt {attempt + 1}: {e}")
                 return f"[Translation error - {target_language.upper()}]"
@@ -211,7 +210,7 @@ class TranslationService:
     
     def _detect_language_sync(self, text):
         """
-        Synchronous language detection
+        Synchronous language detection using deep-translator
         
         Args:
             text (str): Text to analyze
@@ -220,14 +219,13 @@ class TranslationService:
             str: Language code or None
         """
         try:
-            translator = self._get_translator()
-            if not translator:
-                return None
+            from deep_translator import single_detection
             
-            result = translator.detect(text)
+            # Detect language
+            detected = single_detection(text, api_key=None)
             
-            if result and hasattr(result, 'lang') and result.lang:
-                return result.lang
+            if detected and detected != 'unknown':
+                return detected
             else:
                 return None
                 
@@ -237,7 +235,7 @@ class TranslationService:
     
     async def get_supported_languages(self):
         """
-        Get list of supported languages
+        Get list of supported languages from deep-translator
         
         Returns:
             dict: Dictionary of language codes and names
@@ -255,15 +253,17 @@ class TranslationService:
     
     def _get_supported_languages_sync(self):
         """
-        Synchronous method to get supported languages
+        Synchronous method to get supported languages from deep-translator
         
         Returns:
             dict: Dictionary of language codes and names
         """
         try:
-            # Get languages from googletrans
-            from googletrans import LANGUAGES
-            return LANGUAGES
+            from deep_translator import GoogleTranslator
+            
+            # Get supported languages
+            languages = GoogleTranslator.get_supported_languages(as_dict=True)
+            return languages
             
         except Exception as e:
             logger.error(f"Error getting supported languages sync: {e}")
@@ -277,9 +277,10 @@ class TranslationService:
             dict: Service status information
         """
         return {
-            'service': 'Google Translate',
+            'service': 'Google Translate (via deep-translator)',
             'rate_limit_delay': self._rate_limit_delay,
             'retry_attempts': self._retry_attempts,
             'max_text_length': self._max_text_length,
-            'last_request_time': self._last_request_time
+            'last_request_time': self._last_request_time,
+            'backend': 'deep-translator'
         }
