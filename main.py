@@ -151,7 +151,7 @@ class TranslationHandler:
                     description=translated_text,
                     color=0x00ff00
                 )
-                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name} • EchoLang by mythicavalon • Support: ko-fi.com/mythicavalon")
+                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name} • EchoLang by mythicavalon • Support: paypal.me/mythicavalon")
                 
                 await thread.send(embed=embed)
                 logger.info(f"Posted successful translation to thread {thread.id}")
@@ -390,7 +390,7 @@ async def info_command(ctx):
     
     embed.add_field(
         name="☕ Support Development",
-        value="**[$20 - Server Hosting](https://ko-fi.com/mythicavalon)** • **[$40 - Premium Features](https://ko-fi.com/mythicavalon)** • **[Custom Amount](https://paypal.me/mythicavalon)**\n*Help keep EchoLang running 24/7 and fund new features!*",
+        value="**[$20 - Server Hosting](https://paypal.me/mythicavalon/20)** • **[$40 - Premium Features](https://paypal.me/mythicavalon/40)** • **[Custom Amount](https://paypal.me/mythicavalon)**\n*Help keep EchoLang running 24/7 and fund new features!*",
         inline=False
     )
     
@@ -427,8 +427,8 @@ async def donate_command(ctx):
     embed.add_field(
         name="🔗 Donation Links",
         value=(
-            "**[$20 Hosting](https://ko-fi.com/mythicavalon)** • "
-            "**[$40 Features](https://ko-fi.com/mythicavalon)** • "
+            "**[$20 Hosting](https://paypal.me/mythicavalon/20)** • "
+            "**[$40 Features](https://paypal.me/mythicavalon/40)** • "
             "**[Custom Amount](https://paypal.me/mythicavalon)**"
         ),
         inline=False

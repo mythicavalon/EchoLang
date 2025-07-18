@@ -95,8 +95,8 @@ If you find EchoLang useful, consider supporting its development:
 
 | Amount | Purpose | Link |
 |--------|---------|------|
-| **$20** | 🌐 **Server Hosting** - Keep EchoLang running 24/7 | [![Ko-fi $20](https://img.shields.io/badge/Ko--fi-$20-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon) |
-| **$40** | ✨ **Premium Features** - Fund new language tools & features | [![Ko-fi $40](https://img.shields.io/badge/Ko--fi-$40-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon) |
+| **$20** | 🌐 **Server Hosting** - Keep EchoLang running 24/7 | [![PayPal $20](https://img.shields.io/badge/PayPal-$20-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon/20) |
+| **$40** | ✨ **Premium Features** - Fund new language tools & features | [![PayPal $40](https://img.shields.io/badge/PayPal-$40-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon/40) |
 | **Custom** | 💝 **Your Choice** - Any amount helps! | [![PayPal](https://img.shields.io/badge/PayPal-Custom-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon) |
 
 ### 🎯 What Your Support Enables
