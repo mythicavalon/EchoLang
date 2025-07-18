@@ -34,6 +34,7 @@
 - `!info` - Show bot information and usage guide
 - `!about` - Display bot features and developer info  
 - `!echolang` - Bot credits and support information
+- `!donate` - View donation tiers and support options
 
 ## 🛠️ Technical Details
 
@@ -90,14 +91,33 @@ Open source project - feel free to use and modify!
 
 If you find EchoLang useful, consider supporting its development:
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-mythicavalon-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon)
-[![PayPal](https://img.shields.io/badge/PayPal-mythicavalon-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon)
+### 💰 Donation Tiers
 
-**Why donate?**
-- 🚀 Keeps the bot running 24/7
-- ✨ Funds new features and improvements  
-- 🌍 Supports open source development
-- 💻 Helps maintain hosting costs
+| Amount | Purpose | Link |
+|--------|---------|------|
+| **$20** | 🌐 **Server Hosting** - Keep EchoLang running 24/7 | [![Ko-fi $20](https://img.shields.io/badge/Ko--fi-$20-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon) |
+| **$40** | ✨ **Premium Features** - Fund new language tools & features | [![Ko-fi $40](https://img.shields.io/badge/Ko--fi-$40-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon) |
+| **Custom** | 💝 **Your Choice** - Any amount helps! | [![PayPal](https://img.shields.io/badge/PayPal-Custom-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon) |
+
+### 🎯 What Your Support Enables
+
+**$20 Donation:**
+- ☁️ **1 month** of cloud hosting costs
+- 🛡️ **Reliable 24/7** bot uptime
+- 📊 **Usage monitoring** and optimization
+- 🔧 **Bug fixes** and maintenance
+
+**$40 Donation:**
+- 🚀 **All $20 benefits** included
+- ✨ **Priority feature** development
+- 🌍 **New language** support research
+- 🎨 **UI/UX improvements**
+- 📈 **Performance optimizations**
+
+**Any Amount:**
+- 💚 **Shows appreciation** for the project
+- 🎯 **Motivates continued** development
+- 🌟 **Helps prioritize** user-requested features
 
 ---
 

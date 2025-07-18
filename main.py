@@ -390,12 +390,58 @@ async def info_command(ctx):
     
     embed.add_field(
         name="☕ Support Development",
-        value="[Buy me a coffee](https://ko-fi.com/mythicavalon) • [PayPal](https://paypal.me/mythicavalon)",
+        value="**[$20 - Server Hosting](https://ko-fi.com/mythicavalon)** • **[$40 - Premium Features](https://ko-fi.com/mythicavalon)** • **[Custom Amount](https://paypal.me/mythicavalon)**\n*Help keep EchoLang running 24/7 and fund new features!*",
         inline=False
     )
     
     embed.set_footer(text="EchoLang • Made with ❤️ by mythicavalon")
     embed.set_thumbnail(url=bot.user.avatar.url if bot.user.avatar else None)
+    
+    await ctx.send(embed=embed)
+
+@bot.command(name='donate', aliases=['support', 'funding'])
+async def donate_command(ctx):
+    """Show donation information and support tiers"""
+    embed = discord.Embed(
+        title="☕ Support EchoLang Development",
+        description="Help keep EchoLang running and fund new features!",
+        color=0xFFD700  # Gold color
+    )
+    
+    embed.add_field(
+        name="💰 Donation Tiers",
+        value=(
+            "**$20 - Server Hosting** 🌐\n"
+            "├ 1 month hosting costs\n"
+            "├ 24/7 reliable uptime\n"
+            "└ Bug fixes & maintenance\n\n"
+            "**$40 - Premium Features** ✨\n"
+            "├ All $20 benefits included\n"
+            "├ Priority feature development\n"
+            "├ New language support\n"
+            "└ Performance optimizations"
+        ),
+        inline=False
+    )
+    
+    embed.add_field(
+        name="🔗 Donation Links",
+        value=(
+            "**[$20 Hosting](https://ko-fi.com/mythicavalon)** • "
+            "**[$40 Features](https://ko-fi.com/mythicavalon)** • "
+            "**[Custom Amount](https://paypal.me/mythicavalon)**"
+        ),
+        inline=False
+    )
+    
+    embed.add_field(
+        name="🎯 Why Support?",
+        value="Your donations directly fund server costs, new features, and keep EchoLang free for everyone!",
+        inline=False
+    )
+    
+    embed.set_footer(text="Thank you for considering supporting EchoLang! ❤️")
+    embed.set_thumbnail(url="https://ko-fi.com/img/githubbutton_sm.svg")
     
     await ctx.send(embed=embed)
 
