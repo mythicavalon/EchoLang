@@ -16,7 +16,7 @@ BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN', 'your_bot_token_here')
 TRANSLATION_CONFIG = {
     'rate_limit_delay': 0.5,  # Delay between translation requests in seconds
     'max_text_length': 1000,  # Maximum text length for translation
-    'thread_auto_delete_delay': 180,  # Thread auto-delete delay in seconds (3 minutes)
+    'thread_auto_delete_delay': 120,  # Thread auto-delete delay in seconds (2 minutes)
     'thread_auto_archive_duration': 60,  # Thread auto-archive duration in minutes
 }
 

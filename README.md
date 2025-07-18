@@ -11,7 +11,7 @@
   Translations appear in auto-created threads attached to the original message, keeping conversations organized and clutter-free.
 
 - ⏰ **Auto-Cleanup**  
-  Translation threads automatically delete after 180 seconds, ensuring your server stays clean.
+  Translation threads automatically delete after 120 seconds, ensuring your server stays clean.
 
 - 🌍 **100+ Languages Supported**  
   Powered by Google Translate via `deep-translator`, supporting virtually every major language with automatic source detection.

@@ -73,14 +73,14 @@ class ThreadManager:
         # Schedule new deletion task
         task = asyncio.create_task(ThreadManager._delete_thread_after_delay(thread, message_id))
         thread_deletion_tasks[message_id] = task
-        logger.info(f"Scheduled thread {thread.id} for deletion in 180 seconds")
+        logger.info(f"Scheduled thread {thread.id} for deletion in 120 seconds")
     
     @staticmethod
     async def _delete_thread_after_delay(thread, message_id):
         """Delete thread after delay - guaranteed execution"""
         try:
-            logger.info(f"Thread {thread.id} deletion countdown started (180s)")
-            await asyncio.sleep(180)  # Wait 3 minutes
+            logger.info(f"Thread {thread.id} deletion countdown started (120s)")
+            await asyncio.sleep(120)  # Wait 2 minutes
             
             # Attempt to delete the thread
             await ThreadManager._cleanup_thread(thread, message_id, "scheduled deletion")
@@ -372,7 +372,7 @@ async def info_command(ctx):
     
     embed.add_field(
         name="✨ Features",
-        value="• Auto-creates translation threads\n• Supports 100+ languages\n• Threads auto-delete after 3 minutes\n• Smart error handling",
+        value="• Auto-creates translation threads\n• Supports 100+ languages\n• Threads auto-delete after 2 minutes\n• Smart error handling",
         inline=False
     )
     
