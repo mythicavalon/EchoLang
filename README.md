@@ -86,6 +86,19 @@ Open source project - feel free to use and modify!
 - Discord: Contact via server where bot is deployed
 - GitHub: [@mythicavalon](https://github.com/mythicavalon)
 
+## ☕ Support Development
+
+If you find EchoLang useful, consider supporting its development:
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-mythicavalon-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/mythicavalon)
+[![PayPal](https://img.shields.io/badge/PayPal-mythicavalon-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mythicavalon)
+
+**Why donate?**
+- 🚀 Keeps the bot running 24/7
+- ✨ Funds new features and improvements  
+- 🌍 Supports open source development
+- 💻 Helps maintain hosting costs
+
 ---
 
 **EchoLang** • *Breaking language barriers, one emoji at a time* 🌍

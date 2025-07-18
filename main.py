@@ -151,7 +151,7 @@ class TranslationHandler:
                     description=translated_text,
                     color=0x00ff00
                 )
-                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name} • EchoLang by mythicavalon")
+                embed.set_footer(text=f"Translated by {user.display_name if hasattr(user, 'display_name') else user.name} • EchoLang by mythicavalon • Support: ko-fi.com/mythicavalon")
                 
                 await thread.send(embed=embed)
                 logger.info(f"Posted successful translation to thread {thread.id}")
@@ -386,6 +386,12 @@ async def info_command(ctx):
         name="🔗 Commands",
         value="Use `!info`, `!about`, or `!echolang` for help",
         inline=True
+    )
+    
+    embed.add_field(
+        name="☕ Support Development",
+        value="[Buy me a coffee](https://ko-fi.com/mythicavalon) • [PayPal](https://paypal.me/mythicavalon)",
+        inline=False
     )
     
     embed.set_footer(text="EchoLang • Made with ❤️ by mythicavalon")
