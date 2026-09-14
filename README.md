@@ -79,7 +79,7 @@ DISCORD_BOT_TOKEN=your_bot_token_here
 
 ## 📝 License
 
-Open source project - feel free to use and modify!
+Apache License 2.0. See LICENSE
 
 ## 👨‍💻 Developer
 
